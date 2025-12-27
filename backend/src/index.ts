@@ -22,9 +22,16 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const server = http.createServer(app);
+const allowedOrigins = [
+  'https://biolearn.onrender.com', 
+  'https://btechwithml.onrender.com',
+  'http://localhost:5173',
+  process.env.FRONTEND_URL
+].filter(Boolean) as string[];
+
 const io = new Server(server, {
   cors: {
-    origin: ['https://biolearn.onrender.com', 'http://localhost:5173'],
+    origin: allowedOrigins,
     methods: ["GET", "POST"]
   }
 });
@@ -32,7 +39,8 @@ const io = new Server(server, {
 const prisma = new PrismaClient();
 
 app.use(cors({
-  origin: ['https://biolearn.onrender.com', 'http://localhost:5173']
+  origin: allowedOrigins,
+  credentials: true
 }));
 
 // Request logging middleware
