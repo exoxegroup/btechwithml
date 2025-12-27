@@ -1,0 +1,65 @@
+# Logs
+logs
+*.log
+
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Dependencies
+/frontend/node_modules
+/backend/node_modules
+
+# Build output
+/frontend/dist
+/backend/dist
+
+# Environment variables
+.env
+.env.*
+frontend/.env
+backend/.env
+test-credentials.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+backend/ai-grouping-error.log
+
+# Docs folder and test files
+# /docs/STATUS.md
+# /docs/TRACKER.md
+/docs/TECHNICAL_GUIDES.md
+/docs/PRODUCT_REQUIREMENTS.md
+# /docs/IMPLEMENTATION_PLAN.md
+/docs/QUICK_START_GUIDE.md
+/docs/STUDENT_MANUAL.md
+/docs/TEACHER_MANUAL.md
+/1.png
+/checker.txt
+/Cloudinary.txt
+/deployment.txt
+/error.txt
+/info.txt
+/start.txt
+/api-test-monitor.html
+/test-results.json
+
+# Vercel
+.vercel

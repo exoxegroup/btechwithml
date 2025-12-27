@@ -1,0 +1,195 @@
+// Analytics Schema Extensions for BioLearn AI Phase 4
+// This file contains the additional models needed for the enhanced analytics dashboard
+// These models should be integrated into the main schema.prisma file
+
+// Analytics tracking for group performance over time
+model GroupPerformanceMetric {
+  id                String                    @id @default(cuid())
+  classId           String
+  groupId           String
+  metricType        PerformanceMetricType
+  value             Float
+  calculatedAt      DateTime                  @default(now())
+  periodStart       DateTime                  // Start of the measurement period
+  periodEnd         DateTime                  // End of the measurement period
+  metadata          Json?                     // Additional context (sample size, confidence, etc.)
+  class             Class                     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  group             Group                     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([classId, metricType, calculatedAt])
+  @@index([groupId, metricType, calculatedAt])
+}
+
+// AI algorithm effectiveness tracking
+model AIAlgorithmInsight {
+  id                    String                @id @default(cuid())
+  classId               String
+  aiGroupingId          String
+  algorithmVersion      String
+  effectivenessScore    Float                 // 0-1 score indicating algorithm effectiveness
+  genderBalanceScore    Float                 // 0-1 score for gender balance achievement
+  abilityMixScore       Float                 // 0-1 score for mixed-ability distribution
+  teacherSatisfaction   Float?                // Optional teacher rating (1-5 scale)
+  improvementAreas    String[]              // Array of identified improvement areas
+  calculatedAt          DateTime              @default(now())
+  class                 Class                 @relation(fields: [classId], references: [id], onDelete: Cascade)
+  aiGrouping            AIGrouping            @relation(fields: [aiGroupingId], references: [id], onDelete: Cascade)
+
+  @@index([classId, calculatedAt])
+  @@index([aiGroupingId])
+  @@index([algorithmVersion, calculatedAt])
+}
+
+// Student engagement and participation tracking
+model StudentEngagementMetric {
+  id                String                    @id @default(cuid())
+  studentId         String
+  classId           String
+  groupId           String?
+  metricType        EngagementMetricType
+  value             Float                     // Normalized engagement score (0-1)
+  sessionStart      DateTime                  // Session or period start
+  sessionEnd        DateTime                  // Session or period end
+  metadata          Json?                     // Additional context (activities, interactions, etc.)
+  recordedAt        DateTime                  @default(now())
+  student           User                      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  class             Class                     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  group             Group?                    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, classId, metricType, recordedAt])
+  @@index([classId, metricType, recordedAt])
+  @@index([groupId, metricType, recordedAt])
+}
+
+// Longitudinal performance tracking for research
+model LongitudinalPerformance {
+  id                String                    @id @default(cuid())
+  studentId         String
+  classId           String
+  academicYear      String                    // e.g., "2024-2025"
+  semester          String?                   // e.g., "Fall", "Spring", "Summer"
+  pretestScore      Float?
+  posttestScore     Float?
+  retentionScore    Float?
+  improvementRate   Float?                    // Calculated improvement from pre to post
+  retentionRate     Float?                    // Calculated retention from post to retention
+  groupingHistory   Json?                     // Array of group assignments and rationale
+  recordedAt        DateTime                  @default(now())
+  student           User                      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  class             Class                     @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, classId, academicYear])
+  @@index([studentId, academicYear])
+  @@index([classId, academicYear])
+}
+
+// Research data export tracking and metadata
+model ResearchDataExport {
+  id                String                    @id @default(cuid())
+  classId           String
+  teacherId         String
+  exportType        ExportType
+  fileFormat        ExportFormat
+  anonymizationLevel AnonymizationLevel       @default(NONE)
+  recordCount       Int                       // Number of records in export
+  fileSize          Int?                      // File size in bytes
+  fileHash          String?                   // SHA256 hash for integrity verification
+  downloadUrl     String?                   // Temporary secure download URL
+  expiresAt         DateTime?                 // URL expiration time
+  status            ExportStatus              @default(PENDING)
+  metadata          Json?                     // Export configuration and filters
+  createdAt         DateTime                  @default(now())
+  completedAt       DateTime?
+  class             Class                     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacher           User                      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@index([classId, createdAt])
+  @@index([teacherId, createdAt])
+  @@index([status, createdAt])
+}
+
+// Real-time analytics session tracking
+model AnalyticsSession {
+  id                String                    @id @default(cuid())
+  classId           String
+  teacherId         String
+  sessionType       AnalyticsSessionType
+  startTime         DateTime                  @default(now())
+  endTime           DateTime?
+  duration          Int?                      // Duration in seconds
+  metricsViewed     String[]                  // Array of metric types viewed
+  filtersApplied    Json?                     // Applied filters and parameters
+  exportCount       Int                       @default(0) // Number of exports during session
+  lastActivity      DateTime                  @default(now())
+  class             Class                     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacher           User                      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@index([classId, startTime])
+  @@index([teacherId, startTime])
+  @@index([sessionType, startTime])
+}
+
+// Performance metric types
+enum PerformanceMetricType {
+  GROUP_AVERAGE_SCORE      // Average score for group members
+  GROUP_IMPROVEMENT_RATE   // Average improvement from pre to post test
+  GROUP_RETENTION_RATE     // Average retention score vs posttest
+  GROUP_COLLABORATION_SCORE // Collaboration effectiveness metric
+  GROUP_PARTICIPATION_RATE // Average participation across members
+  GROUP_GENDER_BALANCE     // Gender distribution within group
+  GROUP_ABILITY_DISTRIBUTION // High/medium/low performer balance
+}
+
+// Engagement metric types
+enum EngagementMetricType {
+  PARTICIPATION_RATE       // Active participation in activities
+  COLLABORATION_FREQUENCY  // Interactions with group members
+  QUESTION_ASKING_RATE     // Frequency of asking questions
+  HELP_SEEKING_BEHAVIOR    // Requests for assistance
+  HELP_PROVIDING_BEHAVIOR  // Assistance provided to others
+  MATERIAL_ACCESS_RATE     // Access to learning materials
+  SESSION_ATTENDANCE       // Attendance tracking
+}
+
+// Export types for research data
+enum ExportType {
+  GROUP_PERFORMANCE        // Group-level performance metrics
+  INDIVIDUAL_PERFORMANCE   // Individual student performance
+  LONGITUDINAL_DATA        // Long-term performance tracking
+  AI_ALGORITHM_INSIGHTS    // AI grouping effectiveness data
+  COMPREHENSIVE_DATASET    // All available analytics data
+}
+
+// Export file formats
+enum ExportFormat {
+  CSV                     // Comma-separated values
+  JSON                    // JavaScript Object Notation
+  EXCEL                   // Microsoft Excel format
+  TSV                     // Tab-separated values
+}
+
+// Anonymization levels for privacy protection
+enum AnonymizationLevel {
+  NONE                    // No anonymization (full data)
+  PSEUDONYMIZED          // Replace identifiers with pseudonyms
+  ANONYMIZED             // Remove all identifying information
+  AGGREGATED_ONLY        // Only aggregated statistics
+}
+
+// Export processing status
+enum ExportStatus {
+  PENDING                 // Export queued for processing
+  PROCESSING              // Currently being generated
+  COMPLETED               // Export completed successfully
+  FAILED                  // Export failed with error
+  EXPIRED                 // Export expired (too old)
+}
+
+// Analytics session types
+enum AnalyticsSessionType {
+  GROUP_PERFORMANCE       // Viewing group performance metrics
+  AI_INSIGHTS             // Viewing AI algorithm insights
+  LONGITUDINAL_ANALYSIS   // Analyzing longitudinal data
+  RESEARCH_EXPORT         // Generating research data exports
+  COMPREHENSIVE_DASHBOARD // Full dashboard usage
+}

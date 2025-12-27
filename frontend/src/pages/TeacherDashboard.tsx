@@ -1,0 +1,200 @@
+
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { ClassSummary } from '../../types';
+import Header from '../../components/common/Header';
+import { Spinner } from '../../components/common/Spinner';
+import { PlusCircle, Users, ClipboardCopy, Settings, ClipboardList, BarChart3, Edit3, Clock } from 'lucide-react';
+import CreateClassModal from '../../components/modals/CreateClassModal';
+import EditClassModal from '../../components/modals/EditClassModal';
+import { toast } from 'react-hot-toast';
+import { createClass, getTeacherClasses, updateClass } from '../../services/api';
+
+const ClassCard: React.FC<{ classInfo: ClassSummary; onEdit: (id: string, name: string) => void }> = ({ classInfo, onEdit }) => {
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(classInfo.classCode);
+        alert(`Class code "${classInfo.classCode}" copied to clipboard!`);
+    }
+
+    return (
+        <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
+            <div className="p-6 flex-grow">
+                <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-slate-800 mb-2">{classInfo.name}</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => onEdit(classInfo.id, classInfo.name)}
+                            className="p-2 text-slate-400 hover:text-teal-600 transition-colors"
+                            title="Edit class name"
+                        >
+                            <Edit3 size={16} />
+                        </button>
+                        <div 
+                            onClick={copyToClipboard}
+                            className="flex items-center gap-2 bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-sm font-mono cursor-pointer hover:bg-slate-200"
+                        >
+                            {classInfo.classCode}
+                            <ClipboardCopy size={14} />
+                        </div>
+                    </div>
+                </div>
+                <div className="flex items-center text-slate-500 mt-4 gap-4">
+                    <span className="flex items-center gap-2"><Users size={16} />{classInfo.studentCount} Students</span>
+                </div>
+            </div>
+            <div className="bg-slate-50 p-4 flex flex-col gap-2">
+                 <div className="grid grid-cols-2 gap-2">
+                    <Link to={`/class/${classInfo.id}/manage`} className="text-center flex justify-center items-center gap-2 bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg hover:bg-slate-300 transition-colors text-sm">
+                        <Settings size={16} /> Content
+                    </Link>
+                    <Link to={`/class/${classInfo.id}/quizzes`} className="text-center flex justify-center items-center gap-2 bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg hover:bg-slate-300 transition-colors text-sm">
+                        <ClipboardList size={16} /> Quizzes
+                    </Link>
+                     <Link to={`/class/${classInfo.id}/students`} className="text-center flex justify-center items-center gap-2 bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg hover:bg-slate-300 transition-colors text-sm">
+                        <Users size={16} /> Students
+                    </Link>
+                    <Link to={`/class/${classInfo.id}/analytics`} className="text-center flex justify-center items-center gap-2 bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg hover:bg-slate-300 transition-colors text-sm">
+                        <BarChart3 size={16} /> Analytics
+                    </Link>
+                    <Link to={`/class/${classInfo.id}/retention-settings`} className="text-center flex justify-center items-center gap-2 bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg hover:bg-slate-300 transition-colors text-sm col-span-2">
+                        <Clock size={16} /> Test Availability
+                    </Link>
+                 </div>
+                <Link to={`/classroom/${classInfo.id}`} className="w-full text-center block bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors mt-2">
+                    Enter Classroom
+                </Link>
+            </div>
+        </div>
+    );
+}
+
+const TeacherDashboard: React.FC = () => {
+  const [classes, setClasses] = useState<ClassSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingClass, setEditingClass] = useState<{ id: string; name: string } | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    
+    if (user && token) {
+      setLoading(true);
+      getTeacherClasses(token)
+        .then((fetchedClasses: ClassSummary[]) => {
+          setClasses(fetchedClasses);
+        })
+        .catch(error => {
+          console.error('TeacherDashboard: Failed to fetch classes:', error);
+          console.error('TeacherDashboard: Error details:', error.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [user]);
+
+  const handleCreateClass = async (className: string) => {
+    const token = localStorage.getItem('authToken');
+    if (user && token) {
+      try {
+        const newClassSummary = await createClass(className, token);
+        setClasses(prevClasses => [newClassSummary, ...prevClasses]);
+        toast.success(`Class "${className}" created successfully!`);
+      } catch (error) {
+        console.error('Failed to create class:', error);
+        toast.error('Failed to create class. Please try again.');
+        throw error; // Re-throw to let modal handle the error
+      }
+    } else {
+      toast.error('Authentication required. Please log in again.');
+    }
+  };
+
+  const handleEditClass = (id: string, currentName: string) => {
+    setEditingClass({ id, name: currentName });
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveClassName = async (newName: string) => {
+    if (!editingClass || !user) return;
+    
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      toast.error('Authentication required. Please log in again.');
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const updatedClass = await updateClass(editingClass.id, newName, undefined, undefined, token);
+      setClasses(prevClasses => 
+        prevClasses.map(cls => 
+          cls.id === editingClass.id ? { ...cls, name: newName } : cls
+        )
+      );
+      toast.success(`Class renamed to "${newName}"`);
+      setIsEditModalOpen(false);
+      setEditingClass(null);
+    } catch (error) {
+      console.error('Failed to update class name:', error);
+      toast.error('Failed to update class name. Please try again.');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-100">
+      <Header title="Dashboard" />
+      <main className="container mx-auto p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-slate-800">Your Classes</h1>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 bg-teal-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-teal-700 transition-colors shadow-sm"
+          >
+            <PlusCircle size={20} />
+            Create New Class
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center mt-16"><Spinner size="lg" /></div>
+        ) : classes.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {classes.map(c => <ClassCard key={c.id} classInfo={c} onEdit={handleEditClass} />)}
+          </div>
+        ) : (
+          <div className="text-center bg-white p-12 rounded-lg shadow-md">
+            <h2 className="text-2xl font-semibold text-slate-700">No classes yet!</h2>
+            <p className="text-slate-500 mt-2">Click "Create New Class" to get started and set up your first lesson.</p>
+          </div>
+        )}
+      </main>
+      
+      <CreateClassModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreate={handleCreateClass}
+      />
+      <EditClassModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingClass(null);
+        }}
+        onSave={handleSaveClassName}
+        currentName={editingClass?.name || ''}
+        isLoading={isUpdating}
+      />
+    </div>
+  );
+};
+
+export default TeacherDashboard;
