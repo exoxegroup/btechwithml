@@ -1,10 +1,10 @@
 # Project Status
 
-## Project: BioLearn AI
+## Project: TEB ML (formerly BioLearn AI)
 
 **Current Phase**: Phase 5 (Final Polish & Documentation)
 **Status**: ACTIVE
-**Last Updated**: 2025-12-27
+**Last Updated**: 2025-12-28
 
 ## Recent Achievements
 
@@ -99,48 +99,14 @@
 
 #### Phase 5.19: Final Pre-Deployment Polish [COMPLETED ✅]
 **Goals**:
-1.  **Teacher Name Display**: [COMPLETED ✅] Fixed "Teacher: Unknown" in Student Dashboard modal by propagating `teacherName`.
-2.  **Retention Test Availability**: [COMPLETED ✅] Added check to show "Not available yet" if class hasn't ended.
-3.  **Retention Submission Fix**: [COMPLETED ✅] Fixed success check (removed `result.success` dependency) and prevented double submissions.
+1.  **AI Grouping**: [COMPLETED ✅] Fixed ignored group count and fallback logic.
+2.  **Analytics Page**: [COMPLETED ✅] Restored full functionality.
+3.  **Homepage**: [COMPLETED ✅] Fixed blank page issue.
+4.  **Student Dashboard**: [COMPLETED ✅] Fixed "Teacher: Unknown" display.
+5.  **Retention Test**: [COMPLETED ✅] Fixed availability mismatch and submission errors.
+6.  **Deployment**: [COMPLETED ✅] Prepared for Render.com.
 
-## Next Steps
-- **Deployment**: Ready for GitHub publication and Render.com deployment.
+#### Phase 5.20: Branding & Final Polish [COMPLETED ✅]
 **Goals**:
-1.  **Fix Chat Initialization**: [COMPLETED ✅] Updated `GroupChat.tsx` socket connection.
-2.  **Fix Shared Notes Socket**: [COMPLETED ✅] Updated `SharedNotes.tsx` room handling.
-3.  **Fix Student Dashboard Link**: [COMPLETED ✅] Updated link to correct classroom URL.
-
-#### Phase 5.14: AI Chat Bot Integration Fixes [COMPLETED ✅]
-**Goals**:
-1.  **Fix AI Chat Rate Limiting**: [COMPLETED ✅] Implemented backoff in `AIChatBot.tsx`.
-2.  **Fix AI Context**: [COMPLETED ✅] Updated prompt with chat history.
-3.  **Fix AI Bot UI**: [COMPLETED ✅] Improved typing indicators and messages.
-
-#### Phase 5.15: Post-Deployment Critical Fixes [COMPLETED ✅]
-**Goals**:
-1.  **Fix Grouping UI**: [COMPLETED ✅] Resolved "Waiting for Group Assignment" persistence.
-2.  **Fix Analytics Routing**: [COMPLETED ✅] Fixed broken analytics links in Teacher Dashboard.
-3.  **Fix Student Pretest Loop**: [COMPLETED ✅] Corrected logic for pretest completion.
-
-#### Phase 5.16: User Reported Issues Fixes [COMPLETED ✅]
-**Goals**:
-1.  **Fix Analytics Logout**: [COMPLETED ✅] Updated routes in `App.tsx` and links in `TeacherDashboard.tsx`.
-2.  **Fix Grouping Sync**: [COMPLETED ✅] Added socket listener refresh in `ClassroomPage.tsx`.
-3.  **Improve AI Error Logs**: [COMPLETED ✅] Enhanced `ollama.ts` logging.
-
-#### Phase 5.17: AI Grouping Integration Fix [COMPLETED ✅]
-**Goals**:
-1.  **Fix AI Grouping Fallback**: [COMPLETED ✅] Resolved issue with env var loading order causing Ollama connection failure.
-2.  **Implement Lazy Init**: [COMPLETED ✅] Updated `OllamaService` to initialize client on first use.
-3.  **Verify Fix**: [COMPLETED ✅] Confirmed with `debug-grouping.ts` reproduction script.
-
-#### Phase 5.18: Group Count Control & Fallback Debugging [COMPLETED ✅]
-**Goals**:
-1.  **Fix Group Count Input**: [COMPLETED ✅] Updated frontend and backend to pass and respect the requested number of groups.
-2.  **Fix Fallback Group Count**: [COMPLETED ✅] Updated fallback algorithm to respect the requested group count.
-3.  **Enhance Error Logging**: [COMPLETED ✅] Added detailed file-based logging (`ai-grouping-error.log`).
-
-#### Phase 5.19: AI Grouping & Analytics Restoration [COMPLETED ✅]
-**Goals**:
-1.  **Fix AI Grouping Input**: [COMPLETED ✅] Fixed `groupCount` parsing and fallback logic.
-2.  **Restore Analytics Page**: [COMPLETED ✅] Restored `PerformanceAnalyticsPage` and fixed Vite `process` crash.
+1.  **Update Branding**: [COMPLETED ✅] Changed page titles and metadata from "BioLearn AI" to "TEB ML".
+2.  **Favicon**: [COMPLETED ✅] Added missing `favicon.svg` to public folder.

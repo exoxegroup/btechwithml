@@ -1,9 +1,9 @@
-# BioLearn AI Development Tracker
+# TEB ML Development Tracker
 
 This document serves as the central tracking system for all development activities.
 
 ## Project Overview
-BioLearn AI is an AI-powered collaborative biology education platform. This tracker monitors the implementation of ML enhancements.
+TEB ML (formerly BioLearn AI) is an AI-powered collaborative education platform. This tracker monitors the implementation of ML enhancements.
 
 ## Current Phase Status
 
@@ -99,58 +99,14 @@ BioLearn AI is an AI-powered collaborative biology education platform. This trac
 
 #### Phase 5.19: Final Pre-Deployment Polish [COMPLETED ✅]
 **Tasks**:
-- [x] **Teacher Name Display**: Fixed "Teacher: Unknown" in Student Dashboard modal.
-- [x] **Retention Test Availability**: Added check to show "Not available yet" if class hasn't ended.
-- [x] **Retention Submission Fix**: Fixed success check and prevented double submissions.
-**Tasks**:
-- [x] **Fix Score Update**: Ensured immediate score visibility by refetching class details after post-test submission.
+- [x] **AI Grouping**: Fixed ignored group count and fallback logic.
+- [x] **Analytics Page**: Restored full functionality.
+- [x] **Homepage**: Fixed blank page issue.
+- [x] **Student Dashboard**: Fixed "Teacher: Unknown" display.
+- [x] **Retention Test**: Fixed availability mismatch and submission errors.
+- [x] **Deployment**: Prepared for Render.com.
 
-#### Phase 5.10: Retention Test Crash Fix [COMPLETED ✅]
+#### Phase 5.20: Branding & Final Polish [COMPLETED ✅]
 **Tasks**:
-- [x] **Fix ReferenceError**: Defined missing `handleRetentionComplete` function in `ClassroomPage.tsx`.
-
-#### Phase 5.11: Retention Test Data Fix [COMPLETED ✅]
-**Tasks**:
-- [x] **Fix Questions Loading**: Updated `classController.ts` to include `questions` relation.
-
-#### Phase 5.12: Workflow Logic & Validation Fixes [COMPLETED ✅]
-**Tasks**:
-- [x] **Fix Workflow Distortion**: Corrected `ClassroomPage.tsx` sequence enforcement.
-- [x] **Fix Retention Test Duplication**: Added `isSubmitted` check in `RetentionTest` component.
-- [x] **Fix Pretest/Posttest Sequence**: Prioritized Posttest over Pretest when class is ended.
-
-#### Phase 5.13: Group Chat & Notes Fixes [COMPLETED ✅]
-**Tasks**:
-- [x] **Fix Chat Initialization**: Updated `GroupChat.tsx` socket connection.
-- [x] **Fix Shared Notes Socket**: Updated `SharedNotes.tsx` room handling.
-- [x] **Fix Student Dashboard Link**: Updated link to correct classroom URL.
-
-#### Phase 5.14: AI Chat Bot Integration Fixes [COMPLETED ✅]
-**Tasks**:
-- [x] **Fix AI Chat Rate Limiting**: Implemented backoff in `AIChatBot.tsx`.
-- [x] **Fix AI Context**: Updated prompt with chat history.
-- [x] **Fix AI Bot UI**: Improved typing indicators and messages.
-
-#### Phase 5.15: Post-Deployment Critical Fixes [COMPLETED ✅]
-**Tasks**:
-- [x] **Fix Grouping UI**: Resolved "Waiting for Group Assignment" persistence.
-- [x] **Fix Analytics Routing**: Fixed broken analytics links in Teacher Dashboard.
-- [x] **Fix Student Pretest Loop**: Corrected logic for pretest completion.
-
-#### Phase 5.16: User Reported Issues Fixes [COMPLETED ✅]
-**Tasks**:
-- [x] **Fix Analytics Logout**: Updated routes in `App.tsx` and links in `TeacherDashboard.tsx`.
-- [x] **Fix Grouping Sync**: Added socket listener refresh in `ClassroomPage.tsx`.
-- [x] **Improve AI Error Logs**: Enhanced `ollama.ts` logging.
-
-#### Phase 5.17: AI Grouping Integration Fix [COMPLETED ✅]
-**Tasks**:
-- [x] **Fix AI Grouping Fallback**: Resolved issue with env var loading order causing Ollama connection failure.
-- [x] **Implement Lazy Init**: Updated `OllamaService` to initialize client on first use.
-- [x] **Verify Fix**: Confirmed with `debug-grouping.ts` reproduction script.
-
-#### Phase 5.18: Group Count Control & Fallback Debugging [COMPLETED ✅]
-**Tasks**:
-- [x] **Fix Group Count Input**: Updated frontend and backend to pass and respect the requested number of groups.
-- [x] **Fix Fallback Group Count**: Updated fallback algorithm to respect the requested group count.
-- [x] **Enhance Error Logging**: Added detailed file-based logging (`ai-grouping-error.log`) to capture specific AI service failures.
+- [x] **Update Branding**: Updated all page titles and metadata from "BioLearn AI" to "TEB ML".
+- [x] **Favicon**: Added missing `favicon.svg` to fix 404 error.

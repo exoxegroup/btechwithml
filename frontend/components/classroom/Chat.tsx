@@ -233,7 +233,7 @@ const Chat: React.FC<ChatProps> = ({ isAIAssistant, classId, groupId }) => {
     <div className="flex-grow flex flex-col p-4 overflow-hidden">
       <div className="flex justify-between items-center mb-2">
         <p className="text-sm text-slate-500">
-          {isAIAssistant ? 'Chat with BioLearn AI' : 'Group Chat'}
+          {isAIAssistant ? 'Chat with TEB ML' : 'Group Chat'}
         </p>
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${
