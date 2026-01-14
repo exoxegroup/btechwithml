@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { io, Socket } from 'socket.io-client';
 import { getClassDetails, submitPretest, getQuiz, submitQuiz } from '../../services/api';
 import { ClassDetails, ClassroomStatus, EnrolledStudent, Quiz } from '../../types';
 import Header from '../../components/common/Header';
 import { Spinner } from '../../components/common/Spinner';
-import { Play, Square, Users, Redo, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { Play, Square, Users, Redo, CheckCircle, Clock, AlertCircle, LayoutDashboard } from 'lucide-react';
 import JitsiVideo from '../../components/classroom/JitsiVideo';
 import toast from 'react-hot-toast';
 

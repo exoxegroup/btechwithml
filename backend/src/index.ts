@@ -244,6 +244,7 @@ io.on('connection', (socket) => {
   socket.on('teacher:start-class', async (data: { classId: string }) => {
     try {
       const { classId } = data;
+      if (!classId) throw new Error("Class ID is missing");
       
       // Update class status in database
       await prisma.class.update({
@@ -258,13 +259,14 @@ io.on('connection', (socket) => {
       });
     } catch (error) {
       console.error('Error starting class:', error);
-      socket.emit('teacher:error', { error: 'Failed to start class' });
+      socket.emit('teacher:error', { error: `Failed to start class: ${(error as Error).message}` });
     }
   });
 
   socket.on('teacher:activate-groups', async (data: { classId: string }) => {
     try {
       const { classId } = data;
+      if (!classId) throw new Error("Class ID is missing");
       
       // Update class status in database
       await prisma.class.update({
@@ -279,13 +281,14 @@ io.on('connection', (socket) => {
       });
     } catch (error) {
       console.error('Error activating groups:', error);
-      socket.emit('teacher:error', { error: 'Failed to activate groups' });
+      socket.emit('teacher:error', { error: `Failed to activate groups: ${(error as Error).message}` });
     }
   });
 
   socket.on('teacher:end-class', async (data: { classId: string, retentionDelayMinutes?: number }) => {
     try {
       const { classId, retentionDelayMinutes } = data;
+      if (!classId) throw new Error("Class ID is missing");
       
       // Update class status in database
       await prisma.class.update({
@@ -306,7 +309,7 @@ io.on('connection', (socket) => {
       });
     } catch (error) {
       console.error('Error ending class:', error);
-      socket.emit('teacher:error', { error: 'Failed to end class' });
+      socket.emit('teacher:error', { error: `Failed to end class: ${(error as Error).message}` });
     }
   });
 

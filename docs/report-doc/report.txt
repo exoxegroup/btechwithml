@@ -1,0 +1,119 @@
+TEB ML: Comprehensive System Report
+Date: January 11, 2026  
+Prepared For: System Stakeholders  
+Prepared By: Development Team  
+
+Table of Contents
+1.  Introduction
+2.  Methodology
+3.  System Implementation & Results
+4.  Conclusion
+
+ 1. Introduction
+1.1 Purpose and Objectives
+The primary purpose of the TEB ML project is to revolutionize Building Technology education through the integration of Machine Learning (ML). The system aims to address the challenges of manual student grouping and lack of real-time collaborative tools in traditional classroom settings.
+Key Objectives:
+Intelligent Grouping: To automate the formation of student groups based on academic performance (Pre-test scores) and gender balance to ensure heterogeneous and effective collaboration.
+Real-Time Collaboration: To provide a seamless environment for students to interact, share ideas, and learn together synchronously.
+Data-Driven Insights: To offer teachers comprehensive analytics on student progress, retention rates, and group dynamics.
+1.2 Scope of Work
+The project scope encompasses the full development of a web-based educational platform featuring:
+*   Role-based access control (Teacher and Student).
+*   Interactive classroom management and content delivery.
+*   A robust assessment system (Pre-test, Post-test, and Retention tests).
+*   An ML-driven grouping engine.
+*   Real-time communication tools (Chat, Video conferencing integration).
+*   Detailed performance analytics dashboards.
+
+
+
+
+
+2. Methodology
+
+2.1 Technical Approach
+The TEB ML platform is built using a modern, scalable web architecture. The system employs a decoupled client-server model to ensure flexibility and performance.
+
+2.2 Tools and Technologies Implemented
+Frontend Development:
+React.js & TypeScript: For building a dynamic, type-safe user interface.
+Tailwind CSS: For responsive and modern styling.
+ Vite: For optimized build performance.
+Backend Infrastructure:
+Node.js & Express.js: To handle API requests and business logic.
+Socket.io: To enable real-time, bi-directional communication for chat and classroom state synchronization.
+Database Management:
+PostgreSQL: A robust relational database for storing user data, class structures, and assessment results.
+Prisma ORM: For type-safe database queries and schema management.
+Machine Learning & Intelligence:
+Custom Algorithms: Logic for balanced group distribution based on multiple variables (scores, gender).
+ AI Integration (Ollama): For enhanced decision-making rationale and content generation support.
+
+2.3 Development Process
+The project followed an Agile development methodology, focusing on iterative releases and continuous feedback. Key phases included:
+1.  Requirement Analysis: Defining the specific needs of building technology educators.
+2.  System Design: Database schema modeling and UI/UX prototyping.
+3.  Implementation: Core feature development (Auth, Classes, Grouping).
+4.  Testing & Refinement: User testing, bug fixing, and performance optimization.
+
+
+3. System Implementation & Results
+
+This section presents the implemented modules of the TEB ML platform and the observable outputs produced through the user interface. The discussion is organized as an end-to-end workflow (onboarding, classroom operations, assessment, and analytics) and cross-referenced to the captured UI figures. Emphasis is placed on the research-relevant outputs: academic achievement (Pre-test versus Post-test), knowledge retention (Retention test), collaboration enablement (group sessions), and demographic comparison (gender-based breakdowns).
+
+3.1 Entry Point and User Onboarding (Figures 1–5)
+
+The system begins with an informational landing experience and progresses through secure authentication and role-aware onboarding.
+
+Figure 1 (Homepage) demonstrates the platform’s positioning and primary navigation. The landing interface communicates the core capabilities (AI-assisted grouping, retention tracking, and analytics) and provides entry points for registration and login.
+
+Figure 2 (Login Interface) provides secure access to the application for both Teachers and Students. Successful authentication routes users to their role-specific dashboard.
+
+Figures 3–4 (Registration Forms) capture the minimum information required to support the research instrumentation, including demographic attributes such as gender (used for balanced grouping and comparative analytics). Role selection (Teacher versus Student) activates role-based functionality and access boundaries across the platform.
+
+Figure 5 (Profile Completion / Welcome) confirms successful onboarding and establishes readiness for the next workflow stage (dashboard access and class participation).
+
+3.2 Teacher Workflow: Class Management, Content, Assessment, and Grouping (Figures 6–11)
+
+TEB ML provides teachers with a structured workflow aligned with a typical lesson lifecycle: create a class, enroll students, prepare learning materials, administer assessments, conduct collaborative group sessions, and review analytics.
+
+Figure 6 (Teacher Dashboard) is the teacher’s operational hub. It provides an overview of classes, student enrolment counts, and shortcuts to key management areas (content, quizzes, students, analytics, and classroom).
+
+Figure 7 (Class Creation Interface) shows the creation of a new class space. Upon creation, the system generates a unique class identifier/code used by students to enroll. This mechanism supports controlled participation and reduces unauthorized enrolment.
+
+Figure 8 (Content Management) supports resource delivery through file uploads and embedded YouTube links. This design enables mixed-media instruction while keeping the platform lightweight.
+
+Figure 9 (Quiz Creation Workflow) shows assessment authoring for Pre-test, Post-test, and Retention test instruments. The teacher defines questions, correct options, and timing parameters. This module enables consistent measurement across multiple time points.
+
+Figure 10 (ML Grouping Tool) represents the platform’s core differentiator: data-informed student grouping. The grouping workflow is designed to use Pre-test performance as the primary signal for forming heterogeneous teams (mixing high/mid/low performers), incorporate demographic balancing (e.g., gender distribution) where feasible, provide transparency via a rationale output, and support a robust fallback grouping strategy when AI services are unavailable.
+
+Figure 11 (Performance Analytics) demonstrates the reporting layer. The analytics view consolidates student- and group-level performance indicators and provides comparative summaries suitable for research reporting. Key computed outputs include completion rates for each assessment stage (Pre-test, Post-test, Retention), score summaries (averages per stage and per group), improvement indicators derived from Pre-test to Post-test changes, retention indicators derived from Post-test to Retention comparisons, and gender-based comparisons for achievement and retention analyses.
+
+3.3 Student Workflow: Enrollment, Learning Participation, and Assessment Visibility (Figures 12–14)
+
+The student experience is designed to reduce operational friction: a student enrolls once, follows the teacher-controlled class flow, participates in collaboration, and completes required assessments.
+
+Figure 12 (Enrollment Interface) shows the join-class mechanism using the unique class code shared by the teacher. This approach enforces controlled access to class spaces while keeping onboarding simple.
+
+Figure 13 (Student Dashboard) provides a consolidated view of enrolled classes and assessment status. It presents stage completion indicators (Pre-test, Post-test, and Retention test) and supports navigation to pending assessments when available. This makes the assessment workflow visible and auditable from the student perspective.
+
+Figure 14 (Classroom Interface) represents the live instructional environment. The classroom supports real-time interaction and teacher-guided transitions between phases of a lesson. Observable collaboration features include live chat for synchronous participation and group-stage participation (breakout-like behavior) when activated by the teacher.
+
+3.4 Research Instrumentation: What the System Measures
+
+The platform operationalizes the thesis research variables through measurable system outputs:
+Academic achievement: change in scores from Pre-test to Post-test.
+Knowledge retention: delayed measurement via the Retention test and its comparison against Post-test.
+Gender-based effects: comparative summaries of score distributions and improvement/retention indicators.
+Collaboration enablement: group formation records, group membership, and group-level summaries.
+
+3.5 Security, Data Integrity, and Privacy Considerations
+
+Given that the system stores academic performance and user profiles, the implementation enforces role separation (Teacher versus Student) for access control over analytics and class management, persistent storage of assessment outcomes and learning artifacts to reduce data loss, controlled enrollment via class codes, and privacy-aware reporting where exported datasets are intended for authorized research use.
+
+3.6 Summary of Implementation Outcomes
+
+Overall, the implemented TEB ML system supports the intended classroom workflow (instruction, collaboration, and assessment) while producing structured research outputs suitable for evaluating achievement, retention, and demographic differences. The analytics and export capabilities provide a practical bridge between classroom activity and thesis-grade analysis.
+5. Conclusion
+The TEB ML project has successfully delivered a robust, data-driven educational platform. By seamlessly integrating Machine Learning into the classroom workflow, the system not only simplifies administrative tasks like grouping but also enhances the pedagogical experience through balanced collaboration and actionable analytics. The implementation of modern web technologies ensures the platform is scalable, secure, and ready for deployment in real-world educational settings.
+
