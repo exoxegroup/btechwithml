@@ -75,15 +75,15 @@ const LandingPage: React.FC = () => {
       <section className="w-full bg-white py-24 relative z-10">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Powered by Next-Gen AI</h3>
+            <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Powered by Next-Gen ML</h3>
             <p className="text-slate-600 text-lg">Everything you need to enhance student engagement and track academic growth.</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <FeatureCard
               icon={<BrainCircuit size={28} />}
-              title="Smart AI Grouping"
-              description="Automatically create balanced groups based on pre-test scores, gender, and learning styles using Gemini AI algorithms."
+              title="Smart ML Grouping"
+              description="Automatically create balanced groups based on pre-test scores, gender, and learning styles using Gemini ML algorithms."
             />
             <FeatureCard
               icon={<Clock size={28} />}
@@ -103,7 +103,7 @@ const LandingPage: React.FC = () => {
             <FeatureCard
               icon={<BookOpen size={28} />}
               title="Curriculum Aligned"
-              description="Tailored biology content designed to meet educational standards and foster critical thinking skills."
+              description="Tailored building technology content designed to meet educational standards and foster critical thinking skills."
             />
             <FeatureCard
               icon={<Sparkles size={28} />}
@@ -128,7 +128,7 @@ const LandingPage: React.FC = () => {
                     <div className="text-slate-400">Retention Improvement</div>
                 </div>
                 <div className="p-4">
-                    <div className="text-4xl font-bold text-purple-400 mb-2">AI</div>
+                    <div className="text-4xl font-bold text-purple-400 mb-2">ML</div>
                     <div className="text-slate-400">Powered Insights</div>
                 </div>
                 <div className="p-4">
