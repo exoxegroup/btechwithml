@@ -70,7 +70,10 @@ export const useAnalytics = ({
 
   // Fetch all analytics data
   const fetchAllData = useCallback(async () => {
-    if (!classId || !token) return;
+    if (!classId || !token) {
+      setLoading(false);
+      return;
+    }
     
     setLoading(true);
     setError(null);

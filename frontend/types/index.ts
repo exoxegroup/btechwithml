@@ -56,6 +56,7 @@ export interface EnrolledStudent {
     pretestStatus: 'TAKEN' | 'NOT_TAKEN';
     pretestScore: number | null;
     posttestScore: number | null;
+    posttestCompletedAt?: string;
     retentionScore: number | null;
     groupNumber: number | null;
     groupingRationale: string | null;

@@ -142,9 +142,11 @@ const ClassCard: React.FC<{ classInfo: ClassSummary; currentUserId: string }> = 
                             {!loading && !error && classDetails && (
                                 <>
                                     <div className="mb-6">
-                                        <p className="text-slate-600">
-                                            Teacher: {classDetails.teacher?.name || 'Unknown'}
-                                        </p>
+                                        {(classDetails.teacherName || classDetails.teacher?.name) && (
+                                            <p className="text-slate-600">
+                                                Teacher: {classDetails.teacherName || classDetails.teacher?.name}
+                                            </p>
+                                        )}
                                         <p className="text-sm text-slate-500 mt-1">
                                             Access all learning materials for this class
                                         </p>
@@ -157,7 +159,7 @@ const ClassCard: React.FC<{ classInfo: ClassSummary; currentUserId: string }> = 
                                             {currentStudent?.pretestScore !== null ? (
                                                 <div className="flex items-center gap-2 text-green-600 font-bold">
                                                     <CheckCircle size={20} />
-                                                    <span>{currentStudent.pretestScore}%</span>
+                                                    <span>{Math.round(currentStudent.pretestScore)}%</span>
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-2 text-slate-400">
@@ -173,13 +175,44 @@ const ClassCard: React.FC<{ classInfo: ClassSummary; currentUserId: string }> = 
                                             {currentStudent?.posttestScore !== null ? (
                                                 <div className="flex items-center gap-2 text-green-600 font-bold">
                                                     <CheckCircle size={20} />
-                                                    <span>{currentStudent.posttestScore}%</span>
+                                                    <span>{Math.round(currentStudent.posttestScore)}%</span>
                                                 </div>
                                             ) : (
-                                                <div className="flex items-center gap-2 text-slate-400">
-                                                    <XCircle size={20} />
-                                                    <span>Not taken</span>
-                                                </div>
+                                                (() => {
+                                                    // If class hasn't ended, post-test is not available
+                                                    if (!classDetails.classEndedAt) {
+                                                        return (
+                                                            <div className="flex items-center gap-2 text-slate-400 font-medium bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
+                                                                <Timer size={20} />
+                                                                <span>Not available yet</span>
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    const now = Date.now();
+                                                    const endedAt = new Date(classDetails.classEndedAt).getTime();
+                                                    const delayMs = (classDetails.postTestDelayMinutes || 0) * 60 * 1000;
+                                                    const unlockTime = endedAt + delayMs;
+                                                    const isLocked = now < unlockTime;
+
+                                                    if (isLocked) {
+                                                        return (
+                                                            <div className="flex flex-col items-start gap-1">
+                                                                <span className="text-xs text-slate-500">Available in:</span>
+                                                                <CountdownTimer targetDate={new Date(unlockTime)} onComplete={() => setClassDetails({...classDetails})} />
+                                                            </div>
+                                                        );
+                                                    }
+
+                                                    return (
+                                                        <Link
+                                                            to={`/classroom/${classInfo.id}`}
+                                                            className="flex items-center gap-2 bg-blue-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                                                        >
+                                                            Take Test
+                                                        </Link>
+                                                    );
+                                                })()
                                             )}
                                         </div>
 
@@ -189,7 +222,7 @@ const ClassCard: React.FC<{ classInfo: ClassSummary; currentUserId: string }> = 
                                             {currentStudent?.retentionScore !== null ? (
                                                 <div className="flex items-center gap-2 text-green-600 font-bold">
                                                     <CheckCircle size={20} />
-                                                    <span>{currentStudent.retentionScore}%</span>
+                                                    <span>{Math.round(currentStudent.retentionScore)}%</span>
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-2 text-slate-400">
@@ -215,10 +248,21 @@ const ClassCard: React.FC<{ classInfo: ClassSummary; currentUserId: string }> = 
                                                     
                                                     {(() => {
                                                         const now = Date.now();
-                                                        const endedAt = classDetails.classEndedAt ? new Date(classDetails.classEndedAt).getTime() : 0;
-                                                        const delayMs = (classDetails.retentionTestDelayMinutes || 0) * 60 * 1000;
-                                                        const unlockTime = endedAt + delayMs;
-                                                        const isLocked = endedAt > 0 && now < unlockTime;
+                                                        let unlockTime = 0;
+                                                        
+                                                        // Prioritize student's post-test completion time
+                                                        if (currentStudent.posttestCompletedAt) {
+                                                            const completedAt = new Date(currentStudent.posttestCompletedAt).getTime();
+                                                            const delayMs = (classDetails.retentionTestDelayMinutes || 0) * 60 * 1000;
+                                                            unlockTime = completedAt + delayMs;
+                                                        } else if (classDetails.classEndedAt) {
+                                                            // Fallback to class end time
+                                                            const endedAt = new Date(classDetails.classEndedAt).getTime();
+                                                            const delayMs = (classDetails.retentionTestDelayMinutes || 0) * 60 * 1000;
+                                                            unlockTime = endedAt + delayMs;
+                                                        }
+
+                                                        const isLocked = unlockTime > 0 && now < unlockTime;
                                                         
                                                         if (currentStudent.retentionScore !== null) {
                                                             return (
@@ -229,8 +273,8 @@ const ClassCard: React.FC<{ classInfo: ClassSummary; currentUserId: string }> = 
                                                             );
                                                         }
 
-                                                        // If class hasn't ended, retention test is not available
-                                                        if (endedAt === 0) {
+                                                        // If neither post-test completed nor class ended, not available
+                                                        if (unlockTime === 0) {
                                                             return (
                                                                 <div className="flex items-center gap-2 text-slate-400 font-medium bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
                                                                     <Timer size={20} />

@@ -102,6 +102,15 @@ function App(): React.ReactNode {
           />
 
           <Route 
+            path="/class/:classId/analytics-dashboard" 
+            element={
+              <ProtectedRoute role="TEACHER">
+                <AnalyticsDashboard />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
             path="/class/:classId/retention-settings" 
             element={
               <ProtectedRoute role="TEACHER">

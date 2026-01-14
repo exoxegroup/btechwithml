@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { PerformanceMetricType, EngagementMetricType } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -1108,19 +1110,25 @@ function formatExportData(data: any[], format: string): string {
 }
 
 /**
- * Upload export file to secure storage (placeholder)
+ * Upload export file to secure storage (local file system for testing)
  */
 async function uploadExportFile(exportId: string, content: string, format: string): Promise<string> {
-  // This is a placeholder implementation
-  // In a real system, this would upload to secure cloud storage (S3, Google Cloud Storage, etc.)
-  // and return a secure, time-limited download URL
+  // Save to local exports directory
+  const exportsDir = path.join(process.cwd(), 'exports');
   
-  const fileName = `export_${exportId}_${Date.now()}.${format.toLowerCase()}`;
-  const downloadUrl = `/api/exports/download/${exportId}`;
+  if (!fs.existsSync(exportsDir)) {
+    fs.mkdirSync(exportsDir, { recursive: true });
+  }
   
-  // Store file content in a temporary location (in-memory for this implementation)
-  // In production, this would be uploaded to secure cloud storage
-  console.log(`Export file ${fileName} would be uploaded to secure storage`);
+  // Use a fixed filename for the exportId so we can find it later
+  const fileName = `${exportId}.${format.toLowerCase()}`;
+  const filePath = path.join(exportsDir, fileName);
+  
+  fs.writeFileSync(filePath, content);
+  
+  const downloadUrl = `/api/analytics/export/${exportId}/download`;
+  
+  console.log(`Export file saved locally to ${filePath}`);
   
   return downloadUrl;
 }

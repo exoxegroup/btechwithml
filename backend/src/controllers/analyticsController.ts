@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma';
+import fs from 'fs';
+import path from 'path';
 import { AuthRequest } from '../middleware/authMiddleware';
 import { 
   calculateGroupPerformance, 
@@ -321,9 +323,18 @@ export async function downloadExport(req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // In a real implementation, this would stream the file from secure storage
-    // For now, we'll return a placeholder response
-    const filename = `research_export_${exportId}.${exportRecord.fileFormat.toLowerCase()}`;
+    // Look for the file in the local exports directory
+    const exportsDir = path.join(process.cwd(), 'exports');
+    const storedFilename = `${exportId}.${exportRecord.fileFormat.toLowerCase()}`;
+    const filePath = path.join(exportsDir, storedFilename);
+
+    if (!fs.existsSync(filePath)) {
+      console.error(`Export file not found at ${filePath}`);
+      res.status(404).json({ success: false, error: 'Export file not found on server' });
+      return;
+    }
+
+    const downloadFilename = `research_export_${exportId}.${exportRecord.fileFormat.toLowerCase()}`;
     const contentType = getContentType(exportRecord.fileFormat);
 
     // Update download count and last accessed
@@ -339,16 +350,15 @@ export async function downloadExport(req: AuthRequest, res: Response): Promise<v
       }
     });
 
-    // Placeholder response - in production, this would stream the actual file
+    // Stream the file
     res.set({
       'Content-Type': contentType,
-      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Disposition': `attachment; filename="${downloadFilename}"`,
       'Cache-Control': 'no-cache'
     });
 
-    // For demo purposes, return sample content
-    const sampleContent = generateSampleExportContent(exportRecord.exportType, exportRecord.fileFormat);
-    res.send(sampleContent);
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
 
   } catch (error) {
     console.error('Error in downloadExport:', error);

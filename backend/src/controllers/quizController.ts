@@ -409,11 +409,15 @@ export const submitQuiz = async (req: AuthRequest, res: Response) => {
     }
 
     // Update enrollment with score
-    const updateData = quizType === 'PRETEST' 
-      ? { pretestScore: finalScore }
-      : quizType === 'POSTTEST'
-      ? { posttestScore: finalScore }
-      : { retentionScore: finalScore };
+    const updateData: any = {};
+    if (quizType === 'PRETEST') {
+      updateData.pretestScore = finalScore;
+    } else if (quizType === 'POSTTEST') {
+      updateData.posttestScore = finalScore;
+      updateData.posttestCompletedAt = new Date();
+    } else {
+      updateData.retentionScore = finalScore;
+    }
 
     await prisma.studentEnrollment.update({
       where: { id: enrollment.id },

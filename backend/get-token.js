@@ -7,7 +7,7 @@ async function getToken() {
   try {
     // Find the test teacher user
     const user = await prisma.user.findFirst({
-      where: { email: 'test.teacher@biolearn.com' }
+      where: { email: 'teacher_test@school.edu' }
     });
 
     if (!user) {

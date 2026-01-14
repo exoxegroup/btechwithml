@@ -23,42 +23,48 @@ const testUsers = [
     email: 'student1_test@school.edu',
     password: 'LearnStudent456!',
     role: 'STUDENT',
-    gender: 'FEMALE'
+    gender: 'FEMALE',
+    studentId: 'S001'
   },
   {
     name: 'Bob Smith',
     email: 'student2_test@school.edu',
     password: 'StudySmart789!',
     role: 'STUDENT',
-    gender: 'MALE'
+    gender: 'MALE',
+    studentId: 'S002'
   },
   {
     name: 'Carol Davis',
     email: 'student3_test@school.edu',
     password: 'BioLearn321!',
     role: 'STUDENT',
-    gender: 'FEMALE'
+    gender: 'FEMALE',
+    studentId: 'S003'
   },
   {
     name: 'David Wilson',
     email: 'student4_test@school.edu',
     password: 'SciencePass654!',
     role: 'STUDENT',
-    gender: 'MALE'
+    gender: 'MALE',
+    studentId: 'S004'
   },
   {
     name: 'Eva Brown',
     email: 'student5_test@school.edu',
     password: 'TestUser987!',
     role: 'STUDENT',
-    gender: 'FEMALE'
+    gender: 'FEMALE',
+    studentId: 'S005'
   },
   {
     name: 'Frank Miller',
     email: 'student6_test@school.edu',
     password: 'BasicAccess123!',
     role: 'STUDENT',
-    gender: 'MALE'
+    gender: 'MALE',
+    studentId: 'S006'
   }
 ];
 
@@ -150,7 +156,7 @@ async function createAllUsers() {
     logInfo('');
     logInfo('Next step: node test-authentication-validation.js');
   } else {
-    logWarning('⚠️  Some users failed to create. Please check the errors above.');
+    logError('⚠️  Some users failed to create. Please check the errors above.');
   }
 }
 

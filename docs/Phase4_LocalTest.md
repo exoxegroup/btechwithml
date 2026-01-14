@@ -4,6 +4,27 @@
 
 This document provides step-by-step procedures for testing the analytics functionality of the biolearn-ml application. The testing focuses on validating the group performance tracking, AI algorithm insights, and data export features through simulated student interactions.
 
+## Resolved Issues (Local Testing)
+
+### 1. Teacher Analytics Page Blank [RESOLVED]
+- **Issue**: The analytics dashboard (`http://localhost:5174/`) rendered a blank page if there were no students enrolled in the class.
+- **Resolution**: Enrolling students and generating data successfully populates the dashboard. The system requires at least one enrolled student to calculate statistics.
+
+### 2. Post-Test Delay Enforcement [RESOLVED]
+- **Issue**: Post-test was available immediately after ending class despite delay settings.
+- **Resolution**: Updated `ClassroomPage.tsx` to refetch class details (getting the correct `classEndedAt` timestamp) when status changes to `POSTTEST` or `ENDED`, enabling the countdown timer logic to work correctly.
+
+### 3. Retention Test Delay Logic [RESOLVED] (Phase 5.23)
+- **Issue**: Retention test countdown was starting from class end time instead of student's individual post-test completion time. This allowed students to take the retention test immediately if the class had ended earlier.
+- **Resolution**: 
+  - Added `posttestCompletedAt` timestamp to student enrollment record in database.
+  - Updated frontend to prioritize `posttestCompletedAt` for calculating retention availability.
+  - Verified that setting a 3-minute delay now correctly locks the retention test for 3 minutes *after* the student submits their post-test.
+
+### 4. UI Polish Fixes [RESOLVED] (Phase 5.23)
+- **Teacher Name Display**: Fixed "Teacher: Unknown" on Student Dashboard by ensuring teacher name is passed in `getClassDetails` API response.
+- **Score Formatting**: Applied `Math.round()` to all test scores to display clean whole numbers (e.g., "67%" instead of "66.66666666666666%").
+
 ## Test Objectives
 
 1. **High Performers**: Students who answer all 3 questions correctly (Pretest, Posttest, Retention)
@@ -87,278 +108,4 @@ curl -X POST http://localhost:3001/api/students \
 curl -X POST http://localhost:3001/api/students \
   -H "Content-Type: application/json" \
   -d '{"name": "Bob Smith", "email": "bob@test.com", "classId": "your-class-id"}'
-
-curl -X POST http://localhost:3001/api/students \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Carol Davis", "email": "carol@test.com", "classId": "your-class-id"}'
-
-# Mid Performers (2 students)
-curl -X POST http://localhost:3001/api/students \
-  -H "Content-Type: application/json" \
-  -d '{"name": "David Wilson", "email": "david@test.com", "classId": "your-class-id"}'
-
-curl -X POST http://localhost:3001/api/students \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Eva Brown", "email": "eva@test.com", "classId": "your-class-id"}'
-
-# Low Performers (1 student)
-curl -X POST http://localhost:3001/api/students \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Frank Miller", "email": "frank@test.com", "classId": "your-class-id"}'
 ```
-
-### Step 2: Simulate Pretest (Before Class)
-
-**High Performers** (Answer all 3 correctly):
-```javascript
-// Alice, Bob, Carol - All correct
-const pretestHigh = {
-  studentId: "alice-id",
-  answers: ["B", "C", "B"], // All correct
-  score: 3,
-  timestamp: new Date().toISOString()
-};
-```
-
-**Mid Performers** (Answer 2 correctly):
-```javascript
-// David - 2 correct, Eva - 2 correct
-const pretestMid = {
-  studentId: "david-id", 
-  answers: ["B", "A", "B"], // Q1, Q3 correct
-  score: 2,
-  timestamp: new Date().toISOString()
-};
-```
-
-**Low Performers** (Answer 1 or 0 correctly):
-```javascript
-// Frank - 1 correct
-const pretestLow = {
-  studentId: "frank-id",
-  answers: ["A", "A", "B"], // Only Q3 correct
-  score: 1,
-  timestamp: new Date().toISOString()
-};
-```
-
-### Step 3: Posttest Challenge (Teacher Must End Class First)
-
-#### Workaround for Posttest Testing
-
-Since the posttest requires the teacher to end the class first, use this testing approach:
-
-**Option A: Direct API Testing (Recommended)**
-```javascript
-// Simulate posttest results directly via API
-const simulatePosttest = async (studentId, answers, score) => {
-  await fetch('/api/analytics/posttest', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      studentId,
-      answers,
-      score,
-      timestamp: new Date().toISOString(),
-      classEnded: true // Simulate class ended state
-    })
-  });
-};
-
-// High Performers - Posttest (All correct, but more difficult)
-await simulatePosttest("alice-id", ["Correct", "Correct", "Correct"], 3);
-await simulatePosttest("bob-id", ["Correct", "Correct", "Correct"], 3);
-await simulatePosttest("carol-id", ["Correct", "Correct", "Correct"], 3);
-
-// Mid Performers - Posttest (2 correct)
-await simulatePosttest("david-id", ["Correct", "Incorrect", "Correct"], 2);
-await simulatePosttest("eva-id", ["Correct", "Correct", "Incorrect"], 2);
-
-// Low Performers - Posttest (1 or 0 correct)
-await simulatePosttest("frank-id", ["Incorrect", "Incorrect", "Correct"], 1);
-```
-
-**Option B: Manual Class End Simulation**
-1. Log in as teacher
-2. Navigate to class management
-3. Click "End Class" button
-4. Immediately proceed with posttest for all students
-5. Use the provided posttest questions above
-
-### Step 4: Retention Test (1 Week Later Simulation)
-
-Use the same testing approach as posttest, but with retention test questions:
-
-```javascript
-// Simulate 1-week delay
-const retentionDelay = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-const retentionTimestamp = new Date(Date.now() + retentionDelay).toISOString();
-
-// Retention test results (same pattern as posttest)
-await simulateRetention("alice-id", ["A", "B", "A"], 3); // High performer
-await simulateRetention("david-id", ["A", "B", "C"], 2); // Mid performer
-await simulateRetention("frank-id", ["B", "A", "D"], 0); // Low performer
-```
-
-### Step 5: Verify Analytics Dashboard
-
-1. **Navigate to Analytics Dashboard**
-   ```
-   http://localhost:3000/class/{your-class-id}/analytics
-   ```
-
-2. **Check Performance Metrics**
-   - Total Groups: Should show group formation based on performance
-   - Average Performance: Should reflect the 3-tier performance pattern
-   - AI-Generated Groups: Should show groups created by AI algorithm
-
-3. **Verify Group Formation**
-   ```javascript
-   // Expected group structure:
-   // Group 1: High Performers (Alice, Bob, Carol)
-   // Group 2: Mid Performers (David, Eva) + 1 High Performer
-   // Group 3: Mixed group with Low Performer (Frank) + support students
-   ```
-
-4. **Validate AI Insights**
-   - Algorithm effectiveness should be > 80%
-   - Gender balance should be optimal
-   - Performance distribution should show 3 distinct tiers
-
-### Step 6: Test Data Export
-
-1. **Export Test Data**
-   ```javascript
-   // Test CSV export
-   await exportResearchData(classId, {
-     format: 'csv',
-     anonymize: false,
-     includeGenderData: true
-   }, token);
-
-   // Test JSON export
-   await exportResearchData(classId, {
-     format: 'json', 
-     anonymize: true,
-     includeGenderData: false
-   }, token);
-   ```
-
-2. **Verify Export Content**
-   - CSV should contain student performance data
-   - JSON should include analytics metadata
-   - Anonymized data should not contain personal identifiers
-
-### Step 7: Real-time Updates Test
-
-1. **Monitor Live Updates**
-   ```javascript
-   // Subscribe to analytics updates
-   const subscription = subscribeToAnalyticsUpdates(classId, (update) => {
-     console.log('Real-time update:', update);
-     // Should show group formation updates
-     // Should show performance metric changes
-   });
-   ```
-
-2. **Trigger Updates**
-   - Submit new test answers
-   - Modify student performance data
-   - Verify dashboard updates in real-time
-
-## Expected Results
-
-### Analytics Dashboard Should Show:
-
-1. **Performance Distribution**
-   - High Performers: 50% (3/6 students)
-   - Mid Performers: 33% (2/6 students)  
-   - Low Performers: 17% (1/6 students)
-
-2. **Group Analytics**
-   - Average group performance score
-   - Gender balance metrics
-   - Improvement rates between tests
-   - AI algorithm effectiveness > 80%
-
-3. **Engagement Metrics**
-   - Student participation rates
-   - Time spent on activities
-   - Interaction patterns
-
-### Export Data Should Include:
-
-- Student performance scores (pre, post, retention)
-- Group formation details
-- AI algorithm recommendations
-- Timeline of activities
-- Gender distribution analysis
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Posttest Not Accessible**
-   - Ensure class is marked as ended
-   - Check API endpoints are responding
-   - Verify student IDs are correct
-
-2. **Analytics Not Updating**
-   - Refresh dashboard manually
-   - Check WebSocket connections
-   - Verify API response format
-
-3. **Export Fails**
-   - Check authentication token
-   - Verify class ID exists
-   - Ensure proper export options
-
-### Debug Commands
-
-```bash
-# Check API health
-curl http://localhost:3001/api/health
-
-# Verify student data
-curl http://localhost:3001/api/students/{studentId}/performance
-
-# Check analytics data
-curl http://localhost:3001/api/analytics/class/{classId} \
-  -H "Authorization: Bearer {token}"
-```
-
-## Success Criteria
-
-✅ **Analytics Dashboard**
-- [ ] Shows 3-tier performance distribution
-- [ ] Displays real-time updates
-- [ ] Shows AI algorithm effectiveness > 80%
-- [ ] Exports data in CSV/JSON formats
-
-✅ **Group Performance**
-- [ ] High performers grouped together
-- [ ] Balanced gender distribution
-- [ ] AI-generated groups show improvement
-- [ ] Retention test results tracked
-
-✅ **Data Integrity**
-- [ ] All test scores recorded accurately
-- [ ] Timeline of tests maintained
-- [ ] Student performance categorized correctly
-- [ ] Export data matches dashboard display
-
-## Next Steps
-
-After successful local testing:
-
-1. **Deploy to staging environment**
-2. **Conduct user acceptance testing**
-3. **Performance testing with larger datasets**
-4. **Security testing of export functionality**
-5. **Documentation for end users**
-
----
-
-*Document Version: 1.0*
-*Last Updated: December 2025*
-*Testing Phase: 4.3 Verification (Local)*

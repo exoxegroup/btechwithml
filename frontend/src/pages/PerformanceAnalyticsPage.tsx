@@ -611,9 +611,55 @@ const PerformanceAnalyticsPage: React.FC = () => {
 
 
 
-    if (loading) return <div className="flex h-screen items-center justify-center"><Spinner size="lg" /></div>;
-    if (error) return <div className="flex h-screen items-center justify-center text-red-500">{error}</div>;
-    if (!analytics || !groupPerformance.length) return null;
+    if (loading) return (
+        <div className="flex flex-col h-screen items-center justify-center gap-4">
+            <Spinner size="lg" />
+            <p className="text-slate-500 font-medium">Loading performance analytics...</p>
+        </div>
+    );
+    
+    if (error) return (
+        <div className="flex h-screen items-center justify-center">
+            <div className="text-center p-8 bg-red-50 rounded-xl border border-red-200">
+                <h3 className="text-red-800 font-bold mb-2">Error Loading Data</h3>
+                <p className="text-red-600">{error}</p>
+                <button 
+                    onClick={() => window.location.reload()}
+                    className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                    Retry
+                </button>
+            </div>
+        </div>
+    );
+
+    // Empty state handling
+    if (!groupPerformance.length) {
+        return (
+            <div className="min-h-screen bg-slate-100">
+                <Header title="Class Performance Analytics" />
+                <main className="container mx-auto p-8">
+                    <div className="flex items-center justify-between mb-6">
+                        <Link to="/teacher-dashboard" className="flex items-center gap-2 text-teal-600 font-semibold hover:underline">
+                            <ArrowLeft size={18} />
+                            Back to Dashboard
+                        </Link>
+                    </div>
+                    
+                    <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl shadow-lg border border-slate-200 text-center">
+                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                            <BarChart3 className="text-slate-400" size={32} />
+                        </div>
+                        <h2 className="text-xl font-bold text-slate-800 mb-2">No Performance Data Available</h2>
+                        <p className="text-slate-500 max-w-md mb-6">
+                            There are no student performance records or groups found for this class yet. 
+                            Data will appear here once students complete assessments or groups are formed.
+                        </p>
+                    </div>
+                </main>
+            </div>
+        );
+    }
     
     return (
         <div className="min-h-screen bg-slate-100">

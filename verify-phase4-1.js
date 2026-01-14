@@ -4,10 +4,10 @@
 const axios = require('axios');
 
 // Fresh JWT token from get-token.js
-const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtajEzMjYxZTAwMDB4aW9sZWF6MmkxeWsiLCJuYW1lIjoiVGVzdCBUZWFjaGVyIiwiZW1haWwiOiJ0ZXN0LnRlYWNoZXJAYmlvbGVhcm4uY29tIiwicm9sZSI6IlRFQUNIRVIiLCJpYXQiOjE3NjU4NzA1ODEsImV4cCI6MTc2NjQ3NTM4MX0.hwcCSgqGb0ZULD3ILh42m-6GA8i8LDWswRg1Htse82c';
+const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNta2VldWhoOTAwMDBxemx0YzV3dzJyaXYiLCJuYW1lIjoiVGVzdCBUZWFjaGVyIiwiZW1haWwiOiJ0ZWFjaGVyX3Rlc3RAc2Nob29sLmVkdSIsInJvbGUiOiJURUFDSEVSIiwiaWF0IjoxNzY4NDE5MzkxLCJleHAiOjE3NjkwMjQxOTF9.O0oXw-jzNe9weaoaDzHXTerKWW_J0hqV4i5vrrlIc2A';
 
 // Valid class ID for test teacher
-const TEST_CLASS_ID = 'cmj13264a0003xiolapkknkcm';
+const TEST_CLASS_ID = 'cmkeew2t50002qzlt4tn9pn9g';
 
 async function verifyBackendAggregation() {
   console.log('🧪 Starting Phase 4.1 Backend Aggregation Verification...\n');

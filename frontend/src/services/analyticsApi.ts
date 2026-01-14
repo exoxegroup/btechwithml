@@ -134,10 +134,11 @@ export interface ExportOptions {
 }
 
 export interface ExportResult {
-  filename: string;
-  content: string;
-  format: string;
+  exportId: string;
+  downloadUrl: string;
   recordCount: number;
+  expiresAt: string;
+  message: string;
 }
 
 export const exportResearchData = async (
@@ -151,9 +152,24 @@ export const exportResearchData = async (
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     },
-    body: JSON.stringify({ classId, data: options }),
+    body: JSON.stringify({ ...options, classIds: [classId] }),
   });
-  return handleResponse(response);
+  const result = await handleResponse(response);
+  return result.data;
+};
+
+export const downloadExportFile = async (url: string, token: string): Promise<Blob> => {
+  const response = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to download export file');
+  }
+  
+  return response.blob();
 };
 
 // Alias for exportResearchData to match test expectations

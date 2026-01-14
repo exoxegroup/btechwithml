@@ -97,16 +97,21 @@ TEB ML (formerly BioLearn AI) is an AI-powered collaborative education platform.
 - [x] **Student Group Layout**: Swapped Group Members (Left Sidebar) with Chat/Notes/AI (Right Main) for better space utilization.
 - [x] **Teacher Monitor Layout**: Removed Video Feed and implemented a Split View for Shared Notes (Focus) and Chat (Context).
 
-#### Phase 5.19: Final Pre-Deployment Polish [COMPLETED ✅]
+#### Phase 5.21: Post Test Delay Enforcement [COMPLETED ✅]
 **Tasks**:
-- [x] **AI Grouping**: Fixed ignored group count and fallback logic.
-- [x] **Analytics Page**: Restored full functionality.
-- [x] **Homepage**: Fixed blank page issue.
-- [x] **Student Dashboard**: Fixed "Teacher: Unknown" display.
-- [x] **Retention Test**: Fixed availability mismatch and submission errors.
-- [x] **Deployment**: Prepared for Render.com.
+- [x] **Countdown Timer Implementation**: Integrated `CountdownTimer` into `ClassroomPage.tsx`.
+- [x] **Delay Logic Fix**: Fixed issue where `classEndedAt` was missing on status change by refetching class details.
+- [x] **UI Feedback**: Added "Post-Test Locked" view with countdown.
 
-#### Phase 5.20: Branding & Final Polish [COMPLETED ✅]
+#### Phase 5.22: UI/UX Refinements (Round 3) [COMPLETED ✅]
 **Tasks**:
-- [x] **Update Branding**: Updated all page titles and metadata from "BioLearn AI" to "TEB ML".
-- [x] **Favicon**: Added missing `favicon.svg` to fix 404 error.
+- [x] **Group Session Layout**: Increased height of right panel (Notes/Chat/AI) for better visibility.
+- [x] **Terminology Update**: Renamed "AI Assistant" to "ML Assistant" across the platform.
+
+#### Phase 5.23: Retention Logic & Final Polish [COMPLETED ✅]
+**Tasks**:
+- [x] **Retention Delay Logic**: Changed retention test delay to count from **post-test completion** instead of class end time.
+- [x] **Teacher Name Display**: Fixed "Teacher: Unknown" bug on Student Dashboard by correctly mapping `teacherName` from API.
+- [x] **Score Rounding**: Applied `Math.round()` to all test scores (Pre/Post/Retention) for consistent whole-number display.
+- [x] **Immediate Access**: Ensured retention test is immediately available if no delay is set (0 mins).
+- [x] **Pretest Requirement**: Removed blocking check that required Pretest to be taken before Retention Test (if Posttest is done).

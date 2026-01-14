@@ -54,7 +54,7 @@ const Chat: React.FC<ChatProps> = ({ isAIAssistant, classId, groupId }) => {
             id: 'ai-intro',
             senderName: 'TEB ML',
             senderId: 'ai-assistant',
-            text: 'Hello! I\'m your AI assistant. Ask me questions about your studies or help with your group work.',
+            text: 'Hello! I\'m your ML assistant. Ask me questions about your studies or help with your group work.',
             isAI: true,
             timestamp: new Date().toISOString(),
           }

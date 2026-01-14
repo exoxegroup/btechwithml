@@ -69,6 +69,7 @@ model StudentEnrollment {
   groupNumber       Int?
   pretestScore      Float?
   posttestScore     Float?
+  posttestCompletedAt DateTime?
   retentionScore    Float?
   groupingRationale String?
   class             Class   @relation(fields: [classId], references: [id], onDelete: Cascade)

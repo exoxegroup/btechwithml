@@ -287,6 +287,7 @@ export const getClassDetails = async (req: AuthRequest, res: Response) => {
         pretestStatus: e.pretestScore !== null ? 'TAKEN' : 'NOT_TAKEN',
         pretestScore: e.pretestScore,
         posttestScore: e.posttestScore,
+        posttestCompletedAt: e.posttestCompletedAt,
         retentionScore: e.retentionScore,
         groupNumber: e.groupNumber,
         groupingRationale: e.groupingRationale,

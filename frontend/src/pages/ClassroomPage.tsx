@@ -6,6 +6,7 @@ import { getClassDetails, submitPretest, getQuiz, submitQuiz } from '../../servi
 import { ClassDetails, ClassroomStatus, EnrolledStudent, Quiz } from '../../types';
 import Header from '../../components/common/Header';
 import { Spinner } from '../../components/common/Spinner';
+import CountdownTimer from '../components/common/CountdownTimer';
 import { Play, Square, Users, Redo, CheckCircle, Clock, AlertCircle, LayoutDashboard } from 'lucide-react';
 import JitsiVideo from '../../components/classroom/JitsiVideo';
 import toast from 'react-hot-toast';
@@ -34,6 +35,7 @@ const ClassroomPage: React.FC = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [takingRetention, setTakingRetention] = useState(false);
+  const [timeTrigger, setTimeTrigger] = useState(Date.now());
 
   useEffect(() => {
     const fetchClassDetails = async () => {
@@ -106,7 +108,7 @@ const ClassroomPage: React.FC = () => {
     };
     fetchClassDetails();
     // Polling/sockets will be added in Phase 6 for real-time updates.
-  }, [classId, user]);
+  }, [classId, user, timeTrigger]);
 
   // Socket.io connection and event handling
   useEffect(() => {
@@ -134,9 +136,10 @@ const ClassroomPage: React.FC = () => {
     newSocket.on('class:state-changed', async (data: { status: ClassroomStatus; message: string }) => {
       setClassStatus(data.status);
       
-      // If entering group session, refresh data to ensure student has group assignment
-      if (data.status === 'GROUP_SESSION') {
-          console.log('Group session activated, refreshing class details...');
+      // Refresh class details when entering Group Session or Post-test/Ended
+      // This ensures we have the latest group assignments or classEndedAt timestamp
+      if (['GROUP_SESSION', 'POSTTEST', 'ENDED'].includes(data.status)) {
+          console.log(`Status changed to ${data.status}, refreshing class details...`);
           const token = localStorage.getItem('authToken');
           if (token && classId) {
              try {
@@ -146,12 +149,11 @@ const ClassroomPage: React.FC = () => {
                  if (user && user.role === 'STUDENT') {
                      const currentStudent = updatedDetails.students.find((s: EnrolledStudent) => s.id === user.id);
                      if (currentStudent) {
-                         console.log('Updated student group:', currentStudent.groupNumber);
                          setStudent(currentStudent);
                      }
                  }
              } catch (err) {
-                 console.error('Failed to refresh class details on group activation:', err);
+                 console.error('Failed to refresh class details on status change:', err);
              }
           }
       }
@@ -339,22 +341,46 @@ const ClassroomPage: React.FC = () => {
     if (!student || !classDetails) return null;
 
     const isRetentionAvailable = () => {
-        if (!classDetails.classEndedAt || !classDetails.retentionTestDelayMinutes) return false;
+        // Must have completed post-test
+        if (student.posttestScore === null) return false;
         
-        // Ensure student has completed both pretest and posttest before making retention available
-        if (student.pretestScore === null || student.posttestScore === null) return false;
+        // If no delay set, available immediately
+        if (!classDetails.retentionTestDelayMinutes) return true;
 
-        const endedAt = new Date(classDetails.classEndedAt).getTime();
-        const now = new Date().getTime();
-        const delayMs = classDetails.retentionTestDelayMinutes * 60 * 1000;
-        return now >= endedAt + delayMs;
+        // If posttestCompletedAt exists, use it
+        if (student.posttestCompletedAt) {
+            const completedAt = new Date(student.posttestCompletedAt).getTime();
+            const now = new Date().getTime();
+            const delayMs = classDetails.retentionTestDelayMinutes * 60 * 1000;
+            return now >= completedAt + delayMs;
+        }
+
+        // Fallback to classEndedAt
+        if (classDetails.classEndedAt) {
+            const endedAt = new Date(classDetails.classEndedAt).getTime();
+            const now = new Date().getTime();
+            const delayMs = classDetails.retentionTestDelayMinutes * 60 * 1000;
+            return now >= endedAt + delayMs;
+        }
+
+        return false;
     };
 
     const getRetentionAvailabilityTime = () => {
-        if (!classDetails.classEndedAt || !classDetails.retentionTestDelayMinutes) return null;
-        const endedAt = new Date(classDetails.classEndedAt).getTime();
-        const delayMs = classDetails.retentionTestDelayMinutes * 60 * 1000;
-        return new Date(endedAt + delayMs);
+        if (!classDetails.retentionTestDelayMinutes) return null;
+        
+        if (student.posttestCompletedAt) {
+            const completedAt = new Date(student.posttestCompletedAt).getTime();
+            const delayMs = classDetails.retentionTestDelayMinutes * 60 * 1000;
+            return new Date(completedAt + delayMs);
+        }
+
+        if (classDetails.classEndedAt) {
+            const endedAt = new Date(classDetails.classEndedAt).getTime();
+            const delayMs = classDetails.retentionTestDelayMinutes * 60 * 1000;
+            return new Date(endedAt + delayMs);
+        }
+        return null;
     };
 
     const retentionAvailable = isRetentionAvailable();
@@ -569,6 +595,44 @@ const ClassroomPage: React.FC = () => {
               }
               return <StudentClassSummary />;
           }
+
+          // Check for Post Test Delay
+          if (classDetails?.classEndedAt && classDetails?.postTestDelayMinutes) {
+             const endedAt = new Date(classDetails.classEndedAt).getTime();
+             const delayMs = classDetails.postTestDelayMinutes * 60 * 1000;
+             const unlockTime = endedAt + delayMs;
+             const now = Date.now();
+             
+             if (now < unlockTime) {
+                 return (
+                     <div className="flex-grow flex flex-col items-center justify-center bg-white rounded-xl shadow-lg p-8">
+                         <div className="text-center max-w-md mx-auto">
+                             <div className="mb-6 bg-amber-50 text-amber-600 p-4 rounded-full inline-flex">
+                                <Clock size={48} />
+                             </div>
+                             <h2 className="text-2xl font-bold text-slate-800 mb-2">Post-Test Locked</h2>
+                             <p className="text-slate-600 mb-8">
+                                The class has ended, but the post-test is not yet available. 
+                                Please wait until the timer expires.
+                             </p>
+                             
+                             <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+                                <CountdownTimer 
+                                    targetDate={new Date(unlockTime)} 
+                                    onComplete={() => setTimeTrigger(Date.now())} 
+                                />
+                             </div>
+                             
+                             <p className="text-sm text-slate-500">
+                                You can stay on this page or return later. 
+                                The test will start automatically when available.
+                             </p>
+                         </div>
+                     </div>
+                 );
+             }
+          }
+
           return posttestQuiz ? 
             <PosttestView quiz={posttestQuiz} onComplete={handlePosttestComplete} /> : 
             <div className="text-center p-8">
@@ -576,6 +640,53 @@ const ClassroomPage: React.FC = () => {
               <p className="text-slate-600 mt-2">Please contact your teacher.</p>
             </div>;
         case 'ENDED':
+            // If student hasn't taken post-test, they should still be able to take it (subject to delay)
+            if (student?.posttestScore === null) {
+                // Check for Post Test Delay logic (same as POSTTEST case)
+                if (classDetails?.classEndedAt && classDetails?.postTestDelayMinutes) {
+                    const endedAt = new Date(classDetails.classEndedAt).getTime();
+                    const delayMs = classDetails.postTestDelayMinutes * 60 * 1000;
+                    const unlockTime = endedAt + delayMs;
+                    const now = Date.now();
+                    
+                    if (now < unlockTime) {
+                        return (
+                            <div className="flex-grow flex flex-col items-center justify-center bg-white rounded-xl shadow-lg p-8">
+                                <div className="text-center max-w-md mx-auto">
+                                    <div className="mb-6 bg-amber-50 text-amber-600 p-4 rounded-full inline-flex">
+                                        <Clock size={48} />
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Post-Test Locked</h2>
+                                    <p className="text-slate-600 mb-8">
+                                        The class has ended, but the post-test is not yet available. 
+                                        Please wait until the timer expires.
+                                    </p>
+                                    
+                                    <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+                                        <CountdownTimer 
+                                            targetDate={new Date(unlockTime)} 
+                                            onComplete={() => setTimeTrigger(Date.now())} 
+                                        />
+                                    </div>
+                                    
+                                    <p className="text-sm text-slate-500">
+                                        You can stay on this page or return later. 
+                                        The test will start automatically when available.
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    }
+                }
+
+                return posttestQuiz ? 
+                    <PosttestView quiz={posttestQuiz} onComplete={handlePosttestComplete} /> : 
+                    <div className="text-center p-8">
+                        <h2 className="text-3xl font-bold">Post-test not available</h2>
+                        <p className="text-slate-600 mt-2">Please contact your teacher.</p>
+                    </div>;
+            }
+
             if (takingRetention && retentionQuiz) {
                 return <RetentionTestView 
                             quiz={retentionQuiz} 

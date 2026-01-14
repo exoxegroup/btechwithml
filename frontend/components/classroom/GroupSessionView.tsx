@@ -48,7 +48,7 @@ const GroupSessionView: React.FC<{ classDetails: ClassDetails; student: Enrolled
       </div>
 
       {/* Right Panel: Tabbed Interface for Chat, Notes, AI (Main Content) */}
-      <div className="lg:col-span-3 flex flex-col h-[calc(100vh-140px)] order-1 lg:order-2">
+      <div className="lg:col-span-3 flex flex-col h-[calc(100vh-90px)] min-h-[600px] order-1 lg:order-2">
         <div className="bg-white rounded-2xl shadow-lg border border-slate-100 flex flex-col h-full overflow-hidden">
           <div className="flex border-b border-slate-100 bg-slate-50/50">
             <button 
@@ -67,7 +67,7 @@ const GroupSessionView: React.FC<{ classDetails: ClassDetails; student: Enrolled
                 onClick={() => setActiveTab('ai')} 
                 className={`flex-1 py-4 px-6 font-semibold text-sm tracking-wide transition-all duration-200 ${activeTab === 'ai' ? 'bg-white border-t-2 border-t-teal-600 text-teal-700 shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
             >
-                AI Assistant
+                ML Assistant
             </button>
           </div>
           <div className="flex-grow flex flex-col overflow-hidden bg-white relative">

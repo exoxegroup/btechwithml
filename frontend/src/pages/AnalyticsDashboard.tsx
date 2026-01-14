@@ -20,7 +20,7 @@ import {
   Eye
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { exportResearchData, GroupPerformanceData } from '../services/analyticsApi';
+import { exportResearchData, downloadExportFile, GroupPerformanceData } from '../services/analyticsApi';
 import { ACCESSIBLE_COLORS, getChartOptions } from './config/visualization';
 import { ErrorBoundary } from '../components/common/ErrorBoundary';
 import GroupDetailsModal from '../components/modals/GroupDetailsModal';
@@ -220,21 +220,22 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = () => {
         throw new Error('Invalid export format. Please select CSV or JSON.');
       }
 
-      const exportData = await exportResearchData(classId, exportOptions, token);
+      const exportResult = await exportResearchData(classId, exportOptions, token);
       
       // Validate export response
-      if (!exportData || !exportData.content || !exportData.filename) {
+      if (!exportResult || !exportResult.downloadUrl) {
         throw new Error('Invalid export response from server');
       }
       
+      // Download the file
+      const blob = await downloadExportFile(exportResult.downloadUrl, token);
+      
       // Create download link
-      const blob = new Blob([exportData.content], { 
-        type: exportOptions.format === 'csv' ? 'text/csv' : 'application/json' 
-      });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = exportData.filename;
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      link.download = `biolearn_export_${classId}_${timestamp}.${exportOptions.format}`;
       link.style.display = 'none';
       document.body.appendChild(link);
       link.click();
@@ -287,10 +288,20 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = () => {
   // Data is automatically fetched by useAnalytics hook
   // No need for manual fetch call
 
+  // Debug logging
+  console.log('AnalyticsDashboard State:', { 
+    loading, 
+    error, 
+    groupsCount: groupPerformance?.length,
+    tokenPresent: !!token,
+    classId
+  });
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center gap-4">
         <Spinner size="lg" />
+        <p className="text-slate-500 font-medium">Loading analytics data...</p>
       </div>
     );
   }
@@ -441,11 +452,23 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = () => {
               {/* Group Performance Grid */}
               <div className="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
                 <h3 className="text-lg font-bold text-slate-800 mb-6">Detailed Group Performance</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {groupPerformance.map((group) => (
-                    <GroupPerformanceCard key={group.groupId} group={group} onViewDetails={openGroupModal} />
-                  ))}
-                </div>
+                {groupPerformance.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {groupPerformance.map((group) => (
+                      <GroupPerformanceCard key={group.groupId} group={group} onViewDetails={openGroupModal} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+                    <div className="mx-auto w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                      <Users className="text-slate-400" size={24} />
+                    </div>
+                    <h3 className="text-lg font-medium text-slate-900">No Groups Formed Yet</h3>
+                    <p className="text-slate-500 mt-1 max-w-sm mx-auto">
+                      There are no student groups in this class. Groups will appear here once they are formed during class sessions.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}

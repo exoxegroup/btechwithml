@@ -97,7 +97,28 @@
 2.  **Fix Retention Test Duplication**: [COMPLETED ✅] Added `isSubmitted` check.
 3.  **Fix Pretest/Posttest Sequence**: [COMPLETED ✅] Prioritized Posttest over Pretest.
 
+#### Phase 5.21: Post Test Delay Enforcement [COMPLETED ✅]
+**Goals**:
+1.  **Fix Delay Logic**: [COMPLETED ✅] Ensured countdown starts from class end time.
+
+#### Phase 5.22: Retention Delay Logic & UI Polish [COMPLETED ✅]
+**Goals**:
+1.  **Retention Delay Update**: [COMPLETED ✅] Changed retention delay to start from student's post-test completion time.
+2.  **Teacher Name Fix**: [COMPLETED ✅] Resolved "Teacher: Unknown" display on Student Dashboard.
+3.  **Score Rounding**: [COMPLETED ✅] Applied rounding to all test scores for cleaner UI.
+
+**Goals**:
+1.  **Countdown Timer Implementation**: [COMPLETED ✅] Integrated `CountdownTimer` into `ClassroomPage.tsx`.
+2.  **Delay Logic Fix**: [COMPLETED ✅] Fixed issue where `classEndedAt` was missing on status change by refetching class details.
+3.  **UI Feedback**: [COMPLETED ✅] Added "Post-Test Locked" view with countdown.
+
+#### Phase 5.22: UI/UX Refinements (Round 3) [COMPLETED ✅]
+**Goals**:
+1.  **Group Session Layout**: [COMPLETED ✅] Increased height of right panel (Notes/Chat/AI) for better visibility.
+2.  **Terminology Update**: [COMPLETED ✅] Renamed "AI Assistant" to "ML Assistant" across the platform.
+
 #### Phase 5.19: Final Pre-Deployment Polish [COMPLETED ✅]
+
 **Goals**:
 1.  **AI Grouping**: [COMPLETED ✅] Fixed ignored group count and fallback logic.
 2.  **Analytics Page**: [COMPLETED ✅] Restored full functionality.
@@ -110,3 +131,15 @@
 **Goals**:
 1.  **Update Branding**: [COMPLETED ✅] Changed page titles and metadata from "BioLearn AI" to "TEB ML".
 2.  **Favicon**: [COMPLETED ✅] Added missing `favicon.svg` to public folder.
+
+#### Phase 5.21: Post Test Delay Enforcement [COMPLETED ✅]
+**Goals**:
+1.  **Post Test Delay**: [COMPLETED ✅] Implemented delay logic in `ClassroomPage.tsx` and `StudentDashboard.tsx` to match Retention Test behavior.
+
+#### Current Testing Status (Local) [IN PROGRESS 🔄]
+**Status**: User is currently testing the app locally.
+**Resolved Issues**:
+1.  **Teacher Analytics Page**: Fixed blank page issue by enrolling students in the class.
+    - **Resolution**: Verified that enrolling students populates `calculateClassStatistics` correctly, allowing the dashboard to render.
+
+

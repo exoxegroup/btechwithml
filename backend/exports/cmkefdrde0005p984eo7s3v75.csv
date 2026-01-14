@@ -1,0 +1,7 @@
+classId,className,studentId,studentName,gender,groupNumber,pretestScore,posttestScore,retentionScore,improvementRate,retentionRate
+CLASS_4tn9pn9g,Verification Class,STUDENT_1,Student 1,FEMALE,,100,100,100,0,100
+CLASS_4tn9pn9g,Verification Class,STUDENT_2,Student 2,MALE,,100,100,100,0,100
+CLASS_4tn9pn9g,Verification Class,STUDENT_3,Student 3,FEMALE,,100,100,100,0,100
+CLASS_4tn9pn9g,Verification Class,STUDENT_4,Student 4,MALE,,66.6,70,75,5.105105105105114,107.14285714285714
+CLASS_4tn9pn9g,Verification Class,STUDENT_5,Student 5,FEMALE,,66.6,70,75,5.105105105105114,107.14285714285714
+CLASS_4tn9pn9g,Verification Class,STUDENT_6,Student 6,MALE,,33.3,40,30,20.12012012012013,75

@@ -1,0 +1,80 @@
+[
+  {
+    "classId": "cmkeew2t50002qzlt4tn9pn9g",
+    "className": "Verification Class",
+    "studentId": "cmkeeyiuo0004qzlt6whomuzl",
+    "studentName": "Bob Smith",
+    "gender": "MALE",
+    "groupNumber": null,
+    "pretestScore": 100,
+    "posttestScore": 100,
+    "retentionScore": 100,
+    "improvementRate": 0,
+    "retentionRate": 100
+  },
+  {
+    "classId": "cmkeew2t50002qzlt4tn9pn9g",
+    "className": "Verification Class",
+    "studentId": "cmkeeyiyd0005qzltmu57gt8v",
+    "studentName": "Carol Davis",
+    "gender": "FEMALE",
+    "groupNumber": null,
+    "pretestScore": 100,
+    "posttestScore": 100,
+    "retentionScore": 100,
+    "improvementRate": 0,
+    "retentionRate": 100
+  },
+  {
+    "classId": "cmkeew2t50002qzlt4tn9pn9g",
+    "className": "Verification Class",
+    "studentId": "cmkeeyj120006qzltd62lrxrl",
+    "studentName": "David Wilson",
+    "gender": "MALE",
+    "groupNumber": null,
+    "pretestScore": 70,
+    "posttestScore": 80,
+    "retentionScore": 80,
+    "improvementRate": 14.285714285714285,
+    "retentionRate": 100
+  },
+  {
+    "classId": "cmkeew2t50002qzlt4tn9pn9g",
+    "className": "Verification Class",
+    "studentId": "cmkeeyj3u0007qzltmlcluq3r",
+    "studentName": "Eva Brown",
+    "gender": "FEMALE",
+    "groupNumber": null,
+    "pretestScore": 70,
+    "posttestScore": 80,
+    "retentionScore": 80,
+    "improvementRate": 14.285714285714285,
+    "retentionRate": 100
+  },
+  {
+    "classId": "cmkeew2t50002qzlt4tn9pn9g",
+    "className": "Verification Class",
+    "studentId": "cmkeeyj6l0008qzlt78jldxh6",
+    "studentName": "Frank Miller",
+    "gender": "MALE",
+    "groupNumber": null,
+    "pretestScore": 30,
+    "posttestScore": 50,
+    "retentionScore": 40,
+    "improvementRate": 66.66666666666666,
+    "retentionRate": 80
+  },
+  {
+    "classId": "cmkeew2t50002qzlt4tn9pn9g",
+    "className": "Verification Class",
+    "studentId": "cmkeeyiq90003qzltuo5exjau",
+    "studentName": "Alice Johnson",
+    "gender": "FEMALE",
+    "groupNumber": null,
+    "pretestScore": 100,
+    "posttestScore": 100,
+    "retentionScore": 100,
+    "improvementRate": 0,
+    "retentionRate": 100
+  }
+]
