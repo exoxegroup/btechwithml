@@ -116,6 +116,11 @@ TEB ML (formerly BioLearn AI) is an AI-powered collaborative education platform.
 - [x] **Immediate Access**: Ensured retention test is immediately available if no delay is set (0 mins).
 - [x] **Pretest Requirement**: Removed blocking check that required Pretest to be taken before Retention Test (if Posttest is done).
 
+#### Phase 5.24: UI Terminology Consistency [COMPLETED ✅]
+**Tasks**:
+- [x] **Manage Students Page**: Renamed "AI Auto-Assign" to "ML Auto-Assign" in buttons, toasts, and instructions.
+- [x] **Classroom Page**: Renamed Jitsi meeting room prefix from "Bioclass" to "BuildingTech".
+
 ### Phase 6: Deployment & Verification [COMPLETED ✅]
 **Completed**: 2026-01-15 12:00 UTC
 

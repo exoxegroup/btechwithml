@@ -123,7 +123,7 @@ const ManageStudentsPage: React.FC = () => {
         
         // Show success message with analytics
         const analytics = result.genderBalance || {};
-        const modeText = mode === 'manual' ? 'Manual' : 'AI';
+        const modeText = mode === 'manual' ? 'Manual' : 'ML';
         toast.success(`${modeText} groups generated successfully!`, {
           duration: 5000,
           icon: '🎉',
@@ -154,7 +154,7 @@ const ManageStudentsPage: React.FC = () => {
       } else if (errorMessage.includes('Currently') && errorMessage.includes('student')) {
         // Handle the detailed backend message format
         if (mode === 'ai' && errorMessage.includes('8 students')) {
-          toast.error('Cannot generate AI groups: ' + errorMessage + ' Use manual grouping for smaller classes.');
+          toast.error('Cannot generate ML groups: ' + errorMessage + ' Use manual grouping for smaller classes.');
         } else if (mode === 'manual' && errorMessage.includes('3 students')) {
           toast.error('Cannot generate manual groups: ' + errorMessage);
         } else {
@@ -238,7 +238,7 @@ const ManageStudentsPage: React.FC = () => {
                     How to Assign Groups
                 </h3>
                 <div className="text-blue-700 text-sm space-y-1">
-                    <p><strong>Option 1 - AI Auto-Assign:</strong> Click "AI Auto-Assign" to automatically group students based on performance and gender balance.</p>
+                    <p><strong>Option 1 - ML Auto-Assign:</strong> Click "ML Auto-Assign" to automatically group students based on performance and gender balance.</p>
                     <p><strong>Option 2 - Manual Assignment:</strong> Click "Manual Mode" to enable input fields, then enter group numbers for each student.</p>
                     <p><strong>Save:</strong> Always click "Save Group Assignments" to save your changes.</p>
                 </div>
@@ -262,7 +262,7 @@ const ManageStudentsPage: React.FC = () => {
                         className="flex items-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
                     >
                        {isGeneratingGroups && groupingMode === 'ai' ? <Spinner size="sm"/> : <Brain size={16}/>}
-                       {isGeneratingGroups && groupingMode === 'ai' ? 'Generating...' : 'AI Auto-Assign'}
+                       {isGeneratingGroups && groupingMode === 'ai' ? 'Generating...' : 'ML Auto-Assign'}
                     </button>
                     <button 
                         onClick={() => handleAutoAssign('manual')}
@@ -307,7 +307,7 @@ const ManageStudentsPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h3 className={`text-lg font-semibold ${groupingMode === 'manual' ? 'text-green-800' : 'text-blue-800'} flex items-center gap-2`}>
                     {groupingMode === 'manual' ? <Users size={20}/> : <Brain size={20}/>} 
-                    {groupingMode === 'manual' ? 'Manual' : 'AI'} Grouping Results
+                    {groupingMode === 'manual' ? 'Manual' : 'ML'} Grouping Results
                   </h3>
                   <button
                     onClick={() => setShowRationale(!showRationale)}
@@ -343,7 +343,7 @@ const ManageStudentsPage: React.FC = () => {
                 
                 {showRationale && groupingRationale && (
                   <div className="mt-4 p-3 bg-white rounded border border-blue-200">
-                    <h4 className="font-semibold text-blue-800 mb-2">AI Grouping Rationale:</h4>
+                    <h4 className="font-semibold text-blue-800 mb-2">ML Grouping Rationale:</h4>
                     <p className="text-blue-700 text-sm leading-relaxed">{groupingRationale}</p>
                     
                     {aiGroupingResult.genderBalanceAnalysis && (

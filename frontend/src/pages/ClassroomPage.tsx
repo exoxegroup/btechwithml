@@ -568,7 +568,7 @@ const ClassroomPage: React.FC = () => {
               {showVideo && (
                 <div className="bg-slate-900 rounded-lg overflow-hidden">
                   <JitsiVideo
-                    roomName={`bioclass-${classId}`}
+                    roomName={`BuildingTech-${classId}`}
                     displayName={user?.name || 'Anonymous'}
                     isTeacher={user?.role === 'TEACHER'}
                   />
@@ -723,7 +723,7 @@ const ClassroomPage: React.FC = () => {
                 {showVideo && (
                   <div className="bg-slate-900 rounded-lg overflow-hidden">
                     <JitsiVideo
-                      roomName={`bioclass-${classId}`}
+                      roomName={`BuildingTech-${classId}`}
                       displayName={user?.name || 'Teacher'}
                       isTeacher={true}
                     />

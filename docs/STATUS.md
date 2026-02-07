@@ -107,6 +107,11 @@
 2.  **Teacher Name Fix**: [COMPLETED ✅] Resolved "Teacher: Unknown" display on Student Dashboard.
 3.  **Score Rounding**: [COMPLETED ✅] Applied rounding to all test scores for cleaner UI.
 
+#### Phase 5.24: UI Terminology Consistency [COMPLETED ✅]
+**Goals**:
+1.  **Manage Students Page**: [COMPLETED ✅] Renamed "AI Auto-Assign" to "ML Auto-Assign" to match platform branding.
+2.  **Classroom Page**: [COMPLETED ✅] Renamed Jitsi meeting room prefix from "Bioclass" to "BuildingTech".
+
 #### Phase 6: Deployment & Verification [COMPLETED ✅]
 **Goals**:
 1.  **Production Deployment**: [COMPLETED ✅] Successfully deployed to Render.com.
